@@ -1,11 +1,39 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEmployeeStore } from '../store/useEmployeeStore';
-import { EmployeeCard } from '../components/EmployeeCard';
-import { ModalWrapper } from '../components/ModalWrapper';
+import EmployeeCard from '../components/EmployeeCard';
+import ModalWrapper from '../components/ModalWrapper';
 import { EmployeeForm } from '../components/EmployeeForm';
 import { Filters } from '../components/Filters';
 import { GradeManager } from '../components/GradeManager';
 import { EmployeeProfile } from './EmployeeProfile';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+
+const Title = styled.h1`
+  font-size: 2rem;
+  color: #222;
+`;
+
+const AddButton = styled.button`
+  background: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+`;
 
 export const Home = () => {
   const {
@@ -53,14 +81,13 @@ export const Home = () => {
   );
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold text-gray-800">Staff Directory</h1>
-        <button
-          onClick={() => { setSelected(null); setModalOpen(true); }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-        >+ Add Employee</button>
-      </div>
+    <Container>
+      <Header>
+        <Title>Staff Directory</Title>
+        <AddButton onClick={() => { setSelected(null); setModalOpen(true); }}>
+          + Add Employee
+        </AddButton>
+      </Header>
 
       <Filters
         searchQuery={search}
@@ -71,7 +98,7 @@ export const Home = () => {
 
       <GradeManager grades={grades} onDelete={deleteGrade} />
 
-      <div className="flex flex-wrap gap-4 mt-4">
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem' }}>
         {filteredEmployees.map(emp => (
           <EmployeeCard
             key={emp.id}
@@ -82,7 +109,7 @@ export const Home = () => {
           />
         ))}
         {filteredEmployees.length === 0 && (
-          <p className="text-gray-500">No matching employees found.</p>
+          <p style={{ color: '#999' }}>No matching employees found.</p>
         )}
       </div>
 
@@ -105,18 +132,8 @@ export const Home = () => {
       >
         <EmployeeProfile employee={profile} />
       </ModalWrapper>
-    </div>
+    </Container>
   );
 };
 
-useEffect(() => {
-  if (employees.length === 0) {
-    const savedEmployees = JSON.parse(localStorage.getItem('employees') || '[]');
-    savedEmployees.forEach(emp => addEmployee(emp));
-  }
-  if (grades.length === 0) {
-    const savedGrades = JSON.parse(localStorage.getItem('grades') || '[]');
-    savedGrades.forEach(grade => addGrade(grade));
-  }
-  // eslint-disable-next-line
-}, []);
+export default Home;
